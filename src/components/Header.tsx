@@ -1,0 +1,166 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import CartButton from "@/components/cart/CartButton";
+import NavDropdown from "@/components/NavDropdown";
+import { aboutMenu } from "@/lib/nav";
+
+const nav = [
+  { href: "/catalog", label: "Каталог" },
+  { href: "/promo", label: "Акции" },
+  { href: "/calculator", label: "Расчёт" },
+];
+
+export default function Header() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const isAdmin = pathname.startsWith("/admin");
+  const onDarkHero = pathname === "/" || pathname.startsWith("/calculator");
+  const aboutActive = aboutMenu.some((i) => pathname.startsWith(i.href));
+  const solid = scrolled || open || !onDarkHero;
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+    setAboutOpen(false);
+  }, [pathname]);
+
+  const closeMobile = () => {
+    setOpen(false);
+    setAboutOpen(false);
+  };
+
+  if (isAdmin) return null;
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,color,box-shadow] duration-300 ${
+        solid
+          ? "bg-linen/95 text-ash shadow-[0_1px_0_rgba(28,25,23,0.08)] backdrop-blur-md"
+          : "bg-transparent text-cream"
+      }`}
+    >
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-5 py-4 sm:px-8 lg:px-10">
+        <Link
+          href="/"
+          onClick={closeMobile}
+          className="font-display text-[1.55rem] leading-none tracking-tight sm:text-[1.75rem]"
+        >
+          Maxi<span className="text-ember-hot">-</span>Kamin
+        </Link>
+
+        <nav className="hidden items-center gap-7 lg:gap-9 md:flex">
+          {nav.map((item) => {
+            const active = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`link-underline text-[13px] font-medium tracking-[0.12em] uppercase ${
+                  active ? "opacity-100" : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+
+          <NavDropdown
+            label="О магазине"
+            items={[...aboutMenu]}
+            light={!solid && onDarkHero}
+          />
+
+          <a
+            href="tel:+74951234567"
+            className={`hidden text-[13px] tracking-wide transition xl:inline ${
+              solid
+                ? "text-ash/80 hover:text-ember"
+                : "opacity-80 hover:opacity-100"
+            }`}
+          >
+            +7 (495) 123-45-67
+          </a>
+          <CartButton />
+        </nav>
+
+        <div className="flex items-center gap-3 md:hidden">
+          <CartButton />
+          <button
+            type="button"
+            className="cursor-pointer p-1"
+            aria-label={open ? "Закрыть меню" : "Открыть меню"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div className="border-t border-line bg-linen px-5 py-6 text-ash md:hidden">
+          <nav className="flex flex-col gap-1">
+            <Link href="/" onClick={closeMobile} className="py-2.5 text-lg">
+              Главная
+            </Link>
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeMobile}
+                className="py-2.5 text-lg"
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setAboutOpen((v) => !v)}
+              className={`flex cursor-pointer items-center justify-between py-2.5 text-left text-lg ${
+                aboutActive ? "text-ember" : ""
+              }`}
+            >
+              О магазине
+              <ChevronDown
+                className={`h-4 w-4 transition ${aboutOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {aboutOpen && (
+              <div className="mb-2 ml-3 flex flex-col gap-1 border-l border-ash/15 pl-4">
+                {aboutMenu.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeMobile}
+                    className="py-2 text-base text-smoke"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <a
+              href="tel:+74951234567"
+              className="mt-4 inline-flex items-center justify-center bg-ember px-5 py-3.5 text-[12px] font-semibold tracking-[0.14em] text-cream uppercase"
+            >
+              Позвонить
+            </a>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
