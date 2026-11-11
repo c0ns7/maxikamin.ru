@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { Suspense } from "react";
 import { connection } from "next/server";
 import PageShell from "@/components/PageShell";
@@ -7,7 +7,7 @@ import { listPortfolio } from "@/lib/db/queries";
 export const instant = false;
 
 export const metadata = {
-  title: "Портфолио — Maxi-Kamin",
+  title: "Портфолио — MaxiKamin",
   description: "Карьер, цех и изделия из елизаветинского гранита",
 };
 

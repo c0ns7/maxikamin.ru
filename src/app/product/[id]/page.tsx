@@ -5,7 +5,11 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { formatPrice } from "@/lib/data";
-import { getProduct, getRelatedProducts } from "@/lib/db/queries";
+import {
+  getProduct,
+  getRelatedProducts,
+  getSettings,
+} from "@/lib/db/queries";
 import ProductActions from "@/components/ProductActions";
 import ProductCard from "@/components/ProductCard";
 
@@ -23,6 +27,7 @@ async function ProductContent({ id }: { id: string }) {
   if (!product || product.active === false) notFound();
 
   const related = getRelatedProducts(product);
+  const phone = getSettings().contacts.phone;
 
   return (
     <div className="mx-auto max-w-[1400px] px-5 pb-20 pt-28 sm:px-8 lg:px-10 lg:pt-32">
@@ -84,7 +89,7 @@ async function ProductContent({ id }: { id: string }) {
           </ul>
 
           <div className="mt-8">
-            <ProductActions product={product} />
+            <ProductActions product={product} phone={phone} />
           </div>
         </div>
       </div>

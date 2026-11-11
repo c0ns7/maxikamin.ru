@@ -60,13 +60,72 @@ async function SettingsContent({
         <AdminCard>
           <h2 className="font-serif text-xl">Контакты</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Телефон" name="phone" defaultValue={s.contacts.phone} />
+            <Field
+              label="Телефон 1"
+              name="phone"
+              defaultValue={s.contacts.phone}
+            />
+            <Field
+              label="Телефон 2"
+              name="phone2"
+              defaultValue={s.contacts.phone2}
+              hint="В шапке появится выпадающее меню"
+            />
+            <Field
+              label="Телефон 3"
+              name="phone3"
+              defaultValue={s.contacts.phone3}
+            />
             <Field label="Email" name="email" defaultValue={s.contacts.email} />
             <Field label="Сайт" name="site" defaultValue={s.contacts.site} />
             <Field
               label="Адрес"
               name="address"
               defaultValue={s.contacts.address}
+            />
+            <Field
+              label="Время работы"
+              name="hours"
+              defaultValue={s.contacts.hours}
+            />
+            <Field
+              label="Примечание ко времени"
+              name="hoursNote"
+              defaultValue={s.contacts.hoursNote}
+            />
+            <Field
+              label="MAX"
+              name="socialMax"
+              defaultValue={s.contacts.socialMax}
+              hint="Ссылка на профиль MAX"
+            />
+            <Field
+              label="Telegram"
+              name="socialTelegram"
+              defaultValue={s.contacts.socialTelegram}
+            />
+            <Field
+              label="WhatsApp"
+              name="socialWhatsapp"
+              defaultValue={s.contacts.socialWhatsapp}
+            />
+          </div>
+        </AdminCard>
+
+        <AdminCard>
+          <h2 className="font-serif text-xl">Доставка</h2>
+          <div className="mt-4 space-y-4">
+            <Field
+              label="Москва и МО"
+              name="deliveryLocal"
+              rows={6}
+              defaultValue={s.contacts.deliveryLocal}
+            />
+            <Field
+              label="Регионы и СНГ"
+              name="deliveryRegions"
+              rows={6}
+              defaultValue={s.contacts.deliveryRegions}
             />
           </div>
         </AdminCard>

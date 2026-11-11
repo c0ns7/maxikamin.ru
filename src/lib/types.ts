@@ -46,9 +46,18 @@ export interface PortfolioItem {
 
 export interface SiteContacts {
   phone: string;
+  phone2: string;
+  phone3: string;
   email: string;
   site: string;
   address: string;
+  hours: string;
+  hoursNote: string;
+  socialMax: string;
+  socialTelegram: string;
+  socialWhatsapp: string;
+  deliveryLocal: string;
+  deliveryRegions: string;
 }
 
 export interface HeroContent {

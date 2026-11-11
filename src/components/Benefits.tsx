@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { Reveal } from "@/components/animations/Reveal";
@@ -54,7 +54,7 @@ export default function Benefits() {
               href="/about"
               className="inline-flex cursor-pointer text-[12px] font-medium tracking-[0.14em] text-ash uppercase border-b border-ash/30 pb-1 transition hover:border-ember hover:text-ember"
             >
-              Узнать о Maxi-Kamin
+              Узнать о MaxiKamin
             </Link>
             <Link
               href="/reviews"

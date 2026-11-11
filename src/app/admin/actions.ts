@@ -248,9 +248,26 @@ export async function saveSettingsAction(formData: FormData) {
     ...current,
     contacts: {
       phone: String(formData.get("phone") ?? current.contacts.phone),
+      phone2: String(formData.get("phone2") ?? current.contacts.phone2),
+      phone3: String(formData.get("phone3") ?? current.contacts.phone3),
       email: String(formData.get("email") ?? current.contacts.email),
       site: String(formData.get("site") ?? current.contacts.site),
       address: String(formData.get("address") ?? current.contacts.address),
+      hours: String(formData.get("hours") ?? current.contacts.hours),
+      hoursNote: String(formData.get("hoursNote") ?? current.contacts.hoursNote),
+      socialMax: String(formData.get("socialMax") ?? current.contacts.socialMax),
+      socialTelegram: String(
+        formData.get("socialTelegram") ?? current.contacts.socialTelegram,
+      ),
+      socialWhatsapp: String(
+        formData.get("socialWhatsapp") ?? current.contacts.socialWhatsapp,
+      ),
+      deliveryLocal: String(
+        formData.get("deliveryLocal") ?? current.contacts.deliveryLocal,
+      ),
+      deliveryRegions: String(
+        formData.get("deliveryRegions") ?? current.contacts.deliveryRegions,
+      ),
     },
     hero: {
       headline: String(formData.get("headline") ?? current.hero.headline),

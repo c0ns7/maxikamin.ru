@@ -4,11 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/animations/Reveal";
 
-const services = [
+const services: {
+  title: string;
+  text: string;
+  image: string;
+  href?: string;
+}[] = [
   {
     title: "Доставка",
-    text: "Аккуратно привезём топку, печь или каменные изделия. Согласуем день, подъезд и разгрузку — без сюрпризов на объекте.",
+    text: "По Москве — 4000 ₽ своим транспортом с экспедитором за 1–3 рабочих дня. В область — плюс 50 ₽/км от МКАД. В регионы — через ЖелДорЭкспедицию, ПЭК и Деловые линии с обрешёткой и страховкой.",
     image: "/images/delivery.png",
+    href: "/delivery",
   },
   {
     title: "Монтаж",
@@ -59,6 +65,14 @@ export default function Services() {
                   <p className="mt-5 max-w-md text-[15px] leading-relaxed text-smoke">
                     {service.text}
                   </p>
+                  {service.href ? (
+                    <Link
+                      href={service.href}
+                      className="link-underline mt-6 inline-block text-[12px] tracking-[0.14em] text-smoke uppercase hover:text-ash"
+                    >
+                      Подробнее о доставке
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             </Reveal>

@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+﻿import { Suspense } from "react";
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth/admin";
@@ -22,7 +22,7 @@ async function LoginContent({
     <div className="flex min-h-screen items-center justify-center bg-[#1a1714] px-4">
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#241f1b] p-8 text-[#f4f2ee] shadow-2xl">
         <p className="text-[11px] tracking-[0.22em] text-[#c9b8a4] uppercase">
-          Maxi-Kamin
+          MaxiKamin
         </p>
         <h1 className="mt-2 font-serif text-3xl">Вход в админку</h1>
         <p className="mt-2 text-sm text-[#a89c90]">

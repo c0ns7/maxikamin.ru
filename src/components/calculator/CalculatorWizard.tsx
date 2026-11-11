@@ -18,8 +18,9 @@ import StepParams from "@/components/calculator/StepParams";
 import StepServices from "@/components/calculator/StepServices";
 import StepSummary from "@/components/calculator/StepSummary";
 
-export default function CalculatorWizard() {
+export default function CalculatorWizard({ phone }: { phone?: string }) {
   const [step, setStep] = useState(1);
+  const displayPhone = phone?.trim() || "";
   const [state, setState] = useState<CalculatorState>(initialCalculatorState);
   const [showSuccess, setShowSuccess] = useState(false);
   const [animKey, setAnimKey] = useState(0);
@@ -142,6 +143,7 @@ export default function CalculatorWizard() {
                     showSuccess={showSuccess}
                     onCloseSuccess={() => setShowSuccess(false)}
                     onRestart={handleRestart}
+                    phone={displayPhone}
                   />
                 )}
               </motion.div>
@@ -190,15 +192,17 @@ export default function CalculatorWizard() {
           <aside className="hidden lg:block">
             <div className="sticky top-36 space-y-4">
               <SummaryCard result={result} step={step} />
-              <p className="px-1 text-xs leading-relaxed text-smoke">
-                Нужна помощь с выбором?{" "}
-                <a
-                  href="tel:+74951234567"
-                  className="text-ash underline-offset-2 hover:text-ember hover:underline"
-                >
-                  +7 (495) 123-45-67
-                </a>
-              </p>
+              {displayPhone ? (
+                <p className="px-1 text-xs leading-relaxed text-smoke">
+                  Нужна помощь с выбором?{" "}
+                  <a
+                    href={`tel:${displayPhone.replace(/[^\d+]/g, "")}`}
+                    className="text-ash underline-offset-2 hover:text-ember hover:underline"
+                  >
+                    {displayPhone}
+                  </a>
+                </p>
+              ) : null}
             </div>
           </aside>
         </div>

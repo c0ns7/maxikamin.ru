@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+﻿import { Suspense } from "react";
 import { connection } from "next/server";
 import CatalogClient from "@/components/CatalogClient";
 import {
@@ -11,9 +11,9 @@ import {
 export const instant = false;
 
 export const metadata = {
-  title: "Каталог — Maxi-Kamin",
+  title: "Каталог — MaxiKamin",
   description:
-    "Каталог Maxi-Kamin: облицовки Madeira, топки, печи, биокамины, гранит Елизаветинский и дымоходы",
+    "Каталог MaxiKamin: облицовки Madeira, топки, печи, биокамины, гранит Елизаветинский и дымоходы",
 };
 
 function CatalogFallback() {

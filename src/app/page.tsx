@@ -44,7 +44,7 @@ async function HomeContent() {
       <CalculatorTeaser image={teaserImage} />
       <Brands brands={brandNames} />
       <Services />
-      <FinalCTA />
+      <FinalCTA contacts={settings.contacts} />
     </>
   );
 }

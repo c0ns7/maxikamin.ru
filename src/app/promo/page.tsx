@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -8,7 +8,7 @@ import { listPromos } from "@/lib/db/queries";
 export const instant = false;
 
 export const metadata = {
-  title: "Акции — Maxi-Kamin",
+  title: "Акции — MaxiKamin",
   description: "Специальные предложения на камины, топки и изделия из камня",
 };
 

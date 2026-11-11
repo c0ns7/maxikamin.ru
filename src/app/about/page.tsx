@@ -1,12 +1,12 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import PageShell from "@/components/PageShell";
 import { img } from "@/lib/images";
 import { brandAssortment, brands } from "@/lib/data";
 
 export const metadata = {
-  title: "О нас — Maxi-Kamin",
+  title: "О нас — MaxiKamin",
   description:
-    "Maxi-Kamin — камины, топки, печи и изделия из гранита Елизаветинский",
+    "MaxiKamin — камины, топки, печи и изделия из гранита Елизаветинский",
 };
 
 const facts = [
@@ -18,7 +18,7 @@ const facts = [
 export default function AboutPage() {
   return (
     <PageShell
-      eyebrow="Maxi-Kamin"
+      eyebrow="MaxiKamin"
       title="О нас"
       lead="Камины, топки, печи европейских и российских брендов — и изделия из елизаветинского гранита от карьера до объекта."
     >
@@ -35,7 +35,7 @@ export default function AboutPage() {
         </div>
         <div className="flex flex-col justify-center">
           <p className="text-[15px] leading-relaxed text-smoke">
-            Maxi-Kamin — шоурум и поставка: Madeira, Экокамин, Kratki, ABX,
+            MaxiKamin — шоурум и поставка: Madeira, Экокамин, Kratki, ABX,
             IldNord, FireBird, La Nordica, Solzaima, MCZ, AVES, Schmid, Brunner,
             Hoxter и дымоходы Феникс. Отдельно — изделия из гранита
             Елизаветинский: плитка, брусчатка, подоконники, ступени, столешницы

@@ -419,6 +419,44 @@ export function deletePortfolioItem(id: string) {
   getDb().delete(portfolioItems).where(eq(portfolioItems.id, id)).run();
 }
 
+function normalizeSettings(stored: Partial<SiteSettings> | null | undefined): SiteSettings {
+  const raw = stored ?? {};
+  const contacts = {
+    ...defaultSettings.contacts,
+    ...(raw.contacts ?? {}),
+  };
+
+  // Upgrade leftover demo placeholders from early seeds.
+  if (/123[- ]?45[- ]?67/.test(contacts.phone)) {
+    contacts.phone = defaultSettings.contacts.phone;
+    contacts.phone2 = contacts.phone2 || defaultSettings.contacts.phone2;
+  }
+  if (/info@maxi-kamin\.ru/i.test(contacts.email)) {
+    contacts.email = defaultSettings.contacts.email;
+  }
+  if (/maxi-kamin\.ru/i.test(contacts.site)) {
+    contacts.site = defaultSettings.contacts.site;
+  }
+
+  const hero = { ...defaultSettings.hero, ...(raw.hero ?? {}) };
+  if (/Maxi-Kamin/i.test(hero.headline)) {
+    hero.headline = defaultSettings.hero.headline;
+  }
+
+  return {
+    ...defaultSettings,
+    ...raw,
+    contacts,
+    hero,
+    metaTitle: (raw.metaTitle ?? defaultSettings.metaTitle).replace(
+      /Maxi-Kamin/g,
+      "MaxiKamin",
+    ),
+    featuredProductIds:
+      raw.featuredProductIds ?? defaultSettings.featuredProductIds,
+  };
+}
+
 export function getSettings(): SiteSettings {
   ensureSeeded();
   const row = getDb()
@@ -427,7 +465,7 @@ export function getSettings(): SiteSettings {
     .where(eq(settings.key, "site"))
     .get();
   if (!row) return defaultSettings;
-  return { ...defaultSettings, ...(row.value as SiteSettings) };
+  return normalizeSettings(row.value as SiteSettings);
 }
 
 export function saveSettings(next: SiteSettings) {

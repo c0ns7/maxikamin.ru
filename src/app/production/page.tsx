@@ -1,9 +1,9 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import PageShell from "@/components/PageShell";
 import { img, videos } from "@/lib/images";
 
 export const metadata = {
-  title: "Производство — Maxi-Kamin",
+  title: "Производство — MaxiKamin",
   description:
     "Карьер и обработка гранита Елизаветинский: от добычи до готовых изделий",
 };

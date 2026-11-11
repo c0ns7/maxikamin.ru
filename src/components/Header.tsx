@@ -6,7 +6,10 @@ import { useEffect, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import CartButton from "@/components/cart/CartButton";
 import NavDropdown from "@/components/NavDropdown";
+import PhoneMenu from "@/components/PhoneMenu";
+import { contactPhones } from "@/lib/contacts";
 import { aboutMenu } from "@/lib/nav";
+import type { SiteContacts } from "@/lib/types";
 
 const nav = [
   { href: "/catalog", label: "Каталог" },
@@ -14,7 +17,7 @@ const nav = [
   { href: "/calculator", label: "Расчёт" },
 ];
 
-export default function Header() {
+export default function Header({ contacts }: { contacts: SiteContacts }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -23,6 +26,7 @@ export default function Header() {
   const onDarkHero = pathname === "/" || pathname.startsWith("/calculator");
   const aboutActive = aboutMenu.some((i) => pathname.startsWith(i.href));
   const solid = scrolled || open || !onDarkHero;
+  const phones = contactPhones(contacts);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -57,7 +61,7 @@ export default function Header() {
           onClick={closeMobile}
           className="font-display text-[1.55rem] leading-none tracking-tight sm:text-[1.75rem]"
         >
-          Maxi<span className="text-ember-hot">-</span>Kamin
+          Maxi<span className="text-ember-hot">Kamin</span>
         </Link>
 
         <nav className="hidden items-center gap-7 lg:gap-9 md:flex">
@@ -82,16 +86,11 @@ export default function Header() {
             light={!solid && onDarkHero}
           />
 
-          <a
-            href="tel:+74951234567"
-            className={`hidden text-[13px] tracking-wide transition xl:inline ${
-              solid
-                ? "text-ash/80 hover:text-ember"
-                : "opacity-80 hover:opacity-100"
-            }`}
-          >
-            +7 (495) 123-45-67
-          </a>
+          <PhoneMenu
+            phones={phones}
+            light={!solid && onDarkHero}
+            className="hidden xl:block"
+          />
           <CartButton />
         </nav>
 
@@ -152,12 +151,9 @@ export default function Header() {
               </div>
             )}
 
-            <a
-              href="tel:+74951234567"
-              className="mt-4 inline-flex items-center justify-center bg-ember px-5 py-3.5 text-[12px] font-semibold tracking-[0.14em] text-cream uppercase"
-            >
-              Позвонить
-            </a>
+            <div className="mt-4">
+              <PhoneMenu phones={phones} variant="button" className="w-full" />
+            </div>
           </nav>
         </div>
       )}

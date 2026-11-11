@@ -19,6 +19,7 @@ interface StepSummaryProps {
   showSuccess: boolean;
   onCloseSuccess: () => void;
   onRestart?: () => void;
+  phone?: string;
 }
 
 const fieldClass =
@@ -32,6 +33,7 @@ export default function StepSummary({
   showSuccess,
   onCloseSuccess,
   onRestart,
+  phone,
 }: StepSummaryProps) {
   const [phoneTouched, setPhoneTouched] = useState(false);
   const phoneError =
@@ -207,12 +209,17 @@ export default function StepSummary({
           >
             Отправить заявку
           </button>
-          <p className="text-center text-xs text-smoke">
-            Или позвоните:{" "}
-            <a href="tel:+74951234567" className="text-ash hover:text-ember">
-              +7 (495) 123-45-67
-            </a>
-          </p>
+          {phone ? (
+            <p className="text-center text-xs text-smoke">
+              Или позвоните:{" "}
+              <a
+                href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                className="text-ash hover:text-ember"
+              >
+                {phone}
+              </a>
+            </p>
+          ) : null}
         </div>
       </form>
 

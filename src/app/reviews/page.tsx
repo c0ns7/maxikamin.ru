@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+﻿import { Suspense } from "react";
 import { connection } from "next/server";
 import PageShell from "@/components/PageShell";
 import { listReviews } from "@/lib/db/queries";
@@ -6,7 +6,7 @@ import { listReviews } from "@/lib/db/queries";
 export const instant = false;
 
 export const metadata = {
-  title: "Отзывы — Maxi-Kamin",
+  title: "Отзывы — MaxiKamin",
   description: "Отзывы клиентов о каминах, камне и монтаже",
 };
 

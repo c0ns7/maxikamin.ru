@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,7 +38,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-[#ddd6cb] bg-[#1a1714] px-4 py-6 text-[#f4f2ee] md:flex">
           <Link href="/admin" className="px-2">
             <p className="text-[11px] tracking-[0.2em] text-[#c9b8a4] uppercase">
-              Maxi-Kamin
+              MaxiKamin
             </p>
             <p className="mt-1 font-serif text-2xl">Кабинет</p>
           </Link>
@@ -90,7 +90,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           <header className="sticky top-0 z-20 border-b border-[#ddd6cb] bg-[#f4f2ee]/95 px-4 py-3 backdrop-blur md:px-8">
             <div className="flex items-center justify-between gap-4">
               <div className="md:hidden">
-                <p className="text-sm font-medium">Админ Maxi-Kamin</p>
+                <p className="text-sm font-medium">Админ MaxiKamin</p>
               </div>
               <div className="hidden text-sm text-[#6f675e] md:block">
                 Панель управления контентом
