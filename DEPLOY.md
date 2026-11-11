@@ -231,6 +231,14 @@ server {
 
     client_max_body_size 20M;
 
+    # Загрузки галереи с диска сразу, без рестарта Next.js
+    location /uploads/ {
+        alias /var/www/maxikamin/public/uploads/;
+        expires 30d;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
     location / {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
@@ -335,7 +343,7 @@ sudo systemctl restart maxikamin
 | 502 Bad Gateway | `systemctl status maxikamin`, `journalctl -u maxikamin -f` |
 | Certbot failed | DNS A-записи, порты 80/443 в UFW и у хостера |
 | Админка не пускает | `.env.local`, `ADMIN_PASSWORD` / пароль из БД |
-| Нет картинок после загрузки | права на `public/uploads`, `client_max_body_size` в Nginx |
+| Нет картинок после загрузки | права на `public/uploads`, `client_max_body_size` в Nginx; блок `location /uploads/` (см. выше) — без него Next отдаёт новые файлы только после `systemctl restart maxikamin` |
 | SQLite readonly | владелец `deploy`, права на `data/` |
 
 ---
