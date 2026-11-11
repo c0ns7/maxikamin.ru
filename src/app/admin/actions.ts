@@ -35,6 +35,8 @@ import {
   getSettings,
 } from "@/lib/db/queries";
 import type {
+  PageFact,
+  PageStage,
   PortfolioItem,
   Product,
   Promo,
@@ -55,6 +57,10 @@ function revalidateSite() {
   revalidatePath("/reviews");
   revalidatePath("/promo");
   revalidatePath("/portfolio");
+  revalidatePath("/about");
+  revalidatePath("/production");
+  revalidatePath("/contacts");
+  revalidatePath("/delivery");
 }
 
 export async function loginAction(formData: FormData) {
@@ -288,6 +294,149 @@ export async function saveSettingsAction(formData: FormData) {
   saveSettings(next);
   revalidateSite();
   redirect("/admin/settings?saved=1");
+}
+
+function readFacts(formData: FormData, count = 6): PageFact[] {
+  const facts: PageFact[] = [];
+  for (let i = 0; i < count; i++) {
+    const n = String(formData.get(`fact_n_${i}`) ?? "").trim();
+    const label = String(formData.get(`fact_label_${i}`) ?? "").trim();
+    if (n || label) facts.push({ n, label });
+  }
+  return facts;
+}
+
+function readStages(formData: FormData, count = 6): PageStage[] {
+  const stages: PageStage[] = [];
+  for (let i = 0; i < count; i++) {
+    const n = String(formData.get(`stage_n_${i}`) ?? "").trim();
+    const title = String(formData.get(`stage_title_${i}`) ?? "").trim();
+    const text = String(formData.get(`stage_text_${i}`) ?? "").trim();
+    const image = String(formData.get(`stage_image_${i}`) ?? "").trim();
+    if (n || title || text || image) {
+      stages.push({ n, title, text, image });
+    }
+  }
+  return stages;
+}
+
+export async function savePagesAction(formData: FormData) {
+  await requireAdmin();
+  const current = getSettings();
+  const page = String(formData.get("page") ?? "");
+
+  let pages = current.pages;
+  let contacts = current.contacts;
+
+  if (page === "about") {
+    pages = {
+      ...pages,
+      about: {
+        eyebrow: String(formData.get("eyebrow") ?? pages.about.eyebrow),
+        title: String(formData.get("title") ?? pages.about.title),
+        lead: String(formData.get("lead") ?? pages.about.lead),
+        image: String(formData.get("image") ?? pages.about.image),
+        body1: String(formData.get("body1") ?? pages.about.body1),
+        body2: String(formData.get("body2") ?? pages.about.body2),
+        facts: readFacts(formData),
+        brandsTitle: String(
+          formData.get("brandsTitle") ?? pages.about.brandsTitle,
+        ),
+        showBrands: formData.get("showBrands") === "on",
+        metaTitle: String(formData.get("metaTitle") ?? pages.about.metaTitle),
+        metaDescription: String(
+          formData.get("metaDescription") ?? pages.about.metaDescription,
+        ),
+      },
+    };
+  } else if (page === "production") {
+    pages = {
+      ...pages,
+      production: {
+        eyebrow: String(formData.get("eyebrow") ?? pages.production.eyebrow),
+        title: String(formData.get("title") ?? pages.production.title),
+        lead: String(formData.get("lead") ?? pages.production.lead),
+        heroImage: String(
+          formData.get("heroImage") ?? pages.production.heroImage,
+        ),
+        heroCaption: String(
+          formData.get("heroCaption") ?? pages.production.heroCaption,
+        ),
+        video1: String(formData.get("video1") ?? pages.production.video1),
+        video1Poster: String(
+          formData.get("video1Poster") ?? pages.production.video1Poster,
+        ),
+        video1Label: String(
+          formData.get("video1Label") ?? pages.production.video1Label,
+        ),
+        video2: String(formData.get("video2") ?? pages.production.video2),
+        video2Poster: String(
+          formData.get("video2Poster") ?? pages.production.video2Poster,
+        ),
+        video2Label: String(
+          formData.get("video2Label") ?? pages.production.video2Label,
+        ),
+        stages: readStages(formData),
+        metaTitle: String(
+          formData.get("metaTitle") ?? pages.production.metaTitle,
+        ),
+        metaDescription: String(
+          formData.get("metaDescription") ?? pages.production.metaDescription,
+        ),
+      },
+    };
+  } else if (page === "contacts") {
+    pages = {
+      ...pages,
+      contacts: {
+        eyebrow: String(formData.get("eyebrow") ?? pages.contacts.eyebrow),
+        title: String(formData.get("title") ?? pages.contacts.title),
+        lead: String(formData.get("lead") ?? pages.contacts.lead),
+        metaTitle: String(
+          formData.get("metaTitle") ?? pages.contacts.metaTitle,
+        ),
+        metaDescription: String(
+          formData.get("metaDescription") ?? pages.contacts.metaDescription,
+        ),
+      },
+    };
+  } else if (page === "delivery") {
+    pages = {
+      ...pages,
+      delivery: {
+        eyebrow: String(formData.get("eyebrow") ?? pages.delivery.eyebrow),
+        title: String(formData.get("title") ?? pages.delivery.title),
+        lead: String(formData.get("lead") ?? pages.delivery.lead),
+        localTitle: String(
+          formData.get("localTitle") ?? pages.delivery.localTitle,
+        ),
+        regionsTitle: String(
+          formData.get("regionsTitle") ?? pages.delivery.regionsTitle,
+        ),
+        metaTitle: String(
+          formData.get("metaTitle") ?? pages.delivery.metaTitle,
+        ),
+        metaDescription: String(
+          formData.get("metaDescription") ?? pages.delivery.metaDescription,
+        ),
+      },
+    };
+    contacts = {
+      ...contacts,
+      deliveryLocal: String(
+        formData.get("deliveryLocal") ?? contacts.deliveryLocal,
+      ),
+      deliveryRegions: String(
+        formData.get("deliveryRegions") ?? contacts.deliveryRegions,
+      ),
+    };
+  } else {
+    redirect("/admin/pages");
+  }
+
+  saveSettings({ ...current, pages, contacts });
+  revalidateSite();
+  redirect(`/admin/pages?saved=${page}`);
 }
 
 export async function changePasswordAction(formData: FormData) {

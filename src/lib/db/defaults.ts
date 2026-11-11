@@ -1,4 +1,5 @@
 import type { SiteSettings } from "@/lib/types";
+import { img, videos } from "@/lib/images";
 
 export const defaultSettings: SiteSettings = {
   contacts: {
@@ -25,6 +26,87 @@ export const defaultSettings: SiteSettings = {
     image: "/images/hero.png",
     ctaPrimary: "Смотреть каталог",
     ctaSecondary: "Рассчитать стоимость",
+  },
+  pages: {
+    about: {
+      eyebrow: "MaxiKamin",
+      title: "О нас",
+      lead: "Камины, топки, печи европейских и российских брендов — и изделия из елизаветинского гранита от карьера до объекта.",
+      image: img.granite.quarryLoader,
+      body1:
+        "MaxiKamin — шоурум и поставка: Madeira, Экокамин, Kratki, ABX, IldNord, FireBird, La Nordica, Solzaima, MCZ, AVES, Schmid, Brunner, Hoxter и дымоходы Феникс. Отдельно — изделия из гранита Елизаветинский: плитка, брусчатка, подоконники, ступени, столешницы и уличные входные группы.",
+      body2:
+        "Подбираем решение под архитектуру, считаем тепловую нагрузку, комплектуем дымоход и облицовку, доставляем и монтируем.",
+      facts: [
+        { n: "15", label: "брендов в шоуруме" },
+        { n: "1", label: "карьер гранита" },
+        { n: "под ключ", label: "доставка и монтаж" },
+      ],
+      brandsTitle: "Бренды и направления",
+      showBrands: true,
+      metaTitle: "О нас — MaxiKamin",
+      metaDescription:
+        "MaxiKamin — камины, топки, печи и изделия из гранита Елизаветинский",
+    },
+    production: {
+      eyebrow: "Камень от карьера",
+      title: "Производство",
+      lead: "Елизаветинский гранит: карьер, цех и склад. Плитка, брусчатка, ступени, подоконники, столешницы и входные группы.",
+      heroImage: img.granite.quarryAerial,
+      heroCaption: "Елизаветинский гранит",
+      video1: videos.production1,
+      video1Poster: img.granite.quarryLoader,
+      video1Label: "Процесс · видео 1",
+      video2: videos.production2,
+      video2Poster: img.granite.quarryOverview,
+      video2Label: "Процесс · видео 2",
+      stages: [
+        {
+          n: "01",
+          title: "Добыча",
+          text: "Елизаветинский гранит — собственная сырьевая база. Блоки идут в дальнейшую обработку.",
+          image: img.granite.quarryWide,
+        },
+        {
+          n: "02",
+          title: "Раскрой",
+          text: "Слябы и заготовки для плитки, ступеней, подоконников и столешниц.",
+          image: img.granite.workshopPolished,
+        },
+        {
+          n: "03",
+          title: "Склад",
+          text: "Готовая брусчатка, бордюры и ступени на паллетах — под отгрузку на объект.",
+          image: img.granite.warehouseSteps,
+        },
+        {
+          n: "04",
+          title: "Монтаж",
+          text: "Доставка и установка каминов, топок и каменных изделий под ключ.",
+          image: img.montage,
+        },
+      ],
+      metaTitle: "Производство — MaxiKamin",
+      metaDescription:
+        "Карьер и обработка гранита Елизаветинский: от добычи до готовых изделий",
+    },
+    contacts: {
+      eyebrow: "Связь",
+      title: "Контакты",
+      lead: "Позвоните, напишите в мессенджер или на почту — ответим в рабочее время.",
+      metaTitle: "Контакты — MaxiKamin",
+      metaDescription: "Телефоны, мессенджеры, время работы и почта MaxiKamin",
+    },
+    delivery: {
+      eyebrow: "Логистика",
+      title: "Доставка",
+      lead: "Привезём заказ своим транспортом по Москве и области или отправим в регионы через проверенные ТК.",
+      localTitle: "Москва и Московская область",
+      regionsTitle: "Доставка в регионы",
+      metaTitle: "Доставка — MaxiKamin",
+      metaDescription:
+        "Доставка каминов и гранита по Москве, МО, регионам России и странам СНГ",
+    },
   },
   featuredProductIds: [
     "Каминный портал Madeira Altea",

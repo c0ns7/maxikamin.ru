@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Boxes,
+  FileText,
   FolderTree,
   ImagePlus,
   LayoutDashboard,
@@ -26,6 +27,7 @@ const links = [
   { href: "/admin/reviews", label: "Отзывы", icon: MessageSquareQuote },
   { href: "/admin/promos", label: "Акции", icon: Megaphone },
   { href: "/admin/portfolio", label: "Портфолио", icon: Images },
+  { href: "/admin/pages", label: "Страницы", icon: FileText },
   { href: "/admin/settings", label: "Сайт", icon: Settings },
 ];
 

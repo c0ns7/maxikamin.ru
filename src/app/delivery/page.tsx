@@ -4,13 +4,16 @@ import { Suspense } from "react";
 import PageShell from "@/components/PageShell";
 import { getSettings } from "@/lib/db/queries";
 
-export const metadata: Metadata = {
-  title: "Доставка — MaxiKamin",
-  description:
-    "Доставка каминов и гранита по Москве, МО, регионам России и странам СНГ",
-};
-
 export const instant = false;
+
+export async function generateMetadata(): Promise<Metadata> {
+  await connection();
+  const page = getSettings().pages.delivery;
+  return {
+    title: page.metaTitle,
+    description: page.metaDescription,
+  };
+}
 
 function Paragraphs({ text }: { text: string }) {
   return (
@@ -28,18 +31,16 @@ function Paragraphs({ text }: { text: string }) {
 
 async function DeliveryContent() {
   await connection();
-  const contacts = getSettings().contacts;
+  const settings = getSettings();
+  const contacts = settings.contacts;
+  const page = settings.pages.delivery;
 
   return (
-    <PageShell
-      eyebrow="Логистика"
-      title="Доставка"
-      lead="Привезём заказ своим транспортом по Москве и области или отправим в регионы через проверенные ТК."
-    >
+    <PageShell eyebrow={page.eyebrow} title={page.title} lead={page.lead}>
       <div className="grid max-w-3xl gap-14">
         <section>
           <h2 className="font-display text-3xl text-ash sm:text-4xl">
-            Москва и Московская область
+            {page.localTitle}
           </h2>
           <div className="mt-6">
             <Paragraphs text={contacts.deliveryLocal} />
@@ -48,7 +49,7 @@ async function DeliveryContent() {
 
         <section>
           <h2 className="font-display text-3xl text-ash sm:text-4xl">
-            Доставка в регионы
+            {page.regionsTitle}
           </h2>
           <div className="mt-6">
             <Paragraphs text={contacts.deliveryRegions} />

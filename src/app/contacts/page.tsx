@@ -5,16 +5,22 @@ import PageShell from "@/components/PageShell";
 import { contactPhones, telHref } from "@/lib/contacts";
 import { getSettings } from "@/lib/db/queries";
 
-export const metadata: Metadata = {
-  title: "Контакты — MaxiKamin",
-  description: "Телефоны, мессенджеры, время работы и почта MaxiKamin",
-};
-
 export const instant = false;
+
+export async function generateMetadata(): Promise<Metadata> {
+  await connection();
+  const page = getSettings().pages.contacts;
+  return {
+    title: page.metaTitle,
+    description: page.metaDescription,
+  };
+}
 
 async function ContactsContent() {
   await connection();
-  const contacts = getSettings().contacts;
+  const settings = getSettings();
+  const contacts = settings.contacts;
+  const page = settings.pages.contacts;
   const phones = contactPhones(contacts);
   const socials = [
     { label: "MAX", href: contacts.socialMax },
@@ -23,11 +29,7 @@ async function ContactsContent() {
   ].filter((s) => s.href.trim());
 
   return (
-    <PageShell
-      eyebrow="Связь"
-      title="Контакты"
-      lead="Позвоните, напишите в мессенджер или на почту — ответим в рабочее время."
-    >
+    <PageShell eyebrow={page.eyebrow} title={page.title} lead={page.lead}>
       <div className="grid gap-12 lg:grid-cols-3">
         <section>
           <h2 className="text-[11px] font-medium tracking-[0.2em] text-ember uppercase">

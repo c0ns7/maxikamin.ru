@@ -443,11 +443,40 @@ function normalizeSettings(stored: Partial<SiteSettings> | null | undefined): Si
     hero.headline = defaultSettings.hero.headline;
   }
 
+  const storedPages = (raw.pages ?? {}) as Partial<SiteSettings["pages"]>;
+  const pages: SiteSettings["pages"] = {
+    about: {
+      ...defaultSettings.pages.about,
+      ...(storedPages.about ?? {}),
+      facts:
+        storedPages.about?.facts?.length
+          ? storedPages.about.facts
+          : defaultSettings.pages.about.facts,
+    },
+    production: {
+      ...defaultSettings.pages.production,
+      ...(storedPages.production ?? {}),
+      stages:
+        storedPages.production?.stages?.length
+          ? storedPages.production.stages
+          : defaultSettings.pages.production.stages,
+    },
+    contacts: {
+      ...defaultSettings.pages.contacts,
+      ...(storedPages.contacts ?? {}),
+    },
+    delivery: {
+      ...defaultSettings.pages.delivery,
+      ...(storedPages.delivery ?? {}),
+    },
+  };
+
   return {
     ...defaultSettings,
     ...raw,
     contacts,
     hero,
+    pages,
     metaTitle: (raw.metaTitle ?? defaultSettings.metaTitle).replace(
       /Maxi-Kamin/g,
       "MaxiKamin",

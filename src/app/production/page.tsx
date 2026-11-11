@@ -1,112 +1,109 @@
 ﻿import Image from "next/image";
+import type { Metadata } from "next";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import PageShell from "@/components/PageShell";
-import { img, videos } from "@/lib/images";
+import { getSettings } from "@/lib/db/queries";
 
-export const metadata = {
-  title: "Производство — MaxiKamin",
-  description:
-    "Карьер и обработка гранита Елизаветинский: от добычи до готовых изделий",
-};
+export const instant = false;
 
-const stages = [
-  {
-    n: "01",
-    title: "Добыча",
-    text: "Елизаветинский гранит — собственная сырьевая база. Блоки идут в дальнейшую обработку.",
-    image: img.granite.quarryWide,
-  },
-  {
-    n: "02",
-    title: "Раскрой",
-    text: "Слябы и заготовки для плитки, ступеней, подоконников и столешниц.",
-    image: img.granite.workshopPolished,
-  },
-  {
-    n: "03",
-    title: "Склад",
-    text: "Готовая брусчатка, бордюры и ступени на паллетах — под отгрузку на объект.",
-    image: img.granite.warehouseSteps,
-  },
-  {
-    n: "04",
-    title: "Монтаж",
-    text: "Доставка и установка каминов, топок и каменных изделий под ключ.",
-    image: img.montage,
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  await connection();
+  const page = getSettings().pages.production;
+  return {
+    title: page.metaTitle,
+    description: page.metaDescription,
+  };
+}
 
-export default function ProductionPage() {
+async function ProductionContent() {
+  await connection();
+  const page = getSettings().pages.production;
+  const videos = [
+    {
+      src: page.video1,
+      poster: page.video1Poster,
+      label: page.video1Label,
+    },
+    {
+      src: page.video2,
+      poster: page.video2Poster,
+      label: page.video2Label,
+    },
+  ].filter((v) => v.src.trim());
+
   return (
-    <PageShell
-      eyebrow="Камень от карьера"
-      title="Производство"
-      lead="Елизаветинский гранит: карьер, цех и склад. Плитка, брусчатка, ступени, подоконники, столешницы и входные группы."
-    >
-      <div className="relative mb-12 aspect-[21/9] overflow-hidden bg-linen-deep sm:mb-16 sm:aspect-[2.4/1]">
-        <Image
-          src={img.granite.quarryAerial}
-          alt="Карьер елизаветинского гранита"
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
-        />
-        <div className="absolute inset-0 bg-ash/40" />
-        <p className="absolute bottom-6 left-6 font-display text-2xl text-cream sm:bottom-10 sm:left-10 sm:text-4xl">
-          Елизаветинский гранит
-        </p>
-      </div>
+    <PageShell eyebrow={page.eyebrow} title={page.title} lead={page.lead}>
+      {page.heroImage ? (
+        <div className="relative mb-12 aspect-[21/9] overflow-hidden bg-linen-deep sm:mb-16 sm:aspect-[2.4/1]">
+          <Image
+            src={page.heroImage}
+            alt={page.heroCaption || page.title}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-ash/40" />
+          {page.heroCaption ? (
+            <p className="absolute bottom-6 left-6 font-display text-2xl text-cream sm:bottom-10 sm:left-10 sm:text-4xl">
+              {page.heroCaption}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
-      <div className="mb-16 grid gap-6 sm:grid-cols-2">
-        <div className="overflow-hidden border border-ash/10 bg-ash">
-          <video
-            className="aspect-video w-full object-cover"
-            controls
-            playsInline
-            preload="metadata"
-            poster={img.granite.quarryLoader}
-          >
-            <source src={videos.production1} type="video/mp4" />
-          </video>
-          <p className="px-4 py-3 text-xs tracking-wider text-cream/60 uppercase">
-            Процесс · видео 1
-          </p>
+      {videos.length > 0 ? (
+        <div className="mb-16 grid gap-6 sm:grid-cols-2">
+          {videos.map((v) => (
+            <div
+              key={v.src}
+              className="overflow-hidden border border-ash/10 bg-ash"
+            >
+              <video
+                className="aspect-video w-full object-cover"
+                controls
+                playsInline
+                preload="metadata"
+                poster={v.poster || undefined}
+              >
+                <source src={v.src} type="video/mp4" />
+              </video>
+              {v.label ? (
+                <p className="px-4 py-3 text-xs tracking-wider text-cream/60 uppercase">
+                  {v.label}
+                </p>
+              ) : null}
+            </div>
+          ))}
         </div>
-        <div className="overflow-hidden border border-ash/10 bg-ash">
-          <video
-            className="aspect-video w-full object-cover"
-            controls
-            playsInline
-            preload="metadata"
-            poster={img.granite.quarryOverview}
-          >
-            <source src={videos.production2} type="video/mp4" />
-          </video>
-          <p className="px-4 py-3 text-xs tracking-wider text-cream/60 uppercase">
-            Процесс · видео 2
-          </p>
-        </div>
-      </div>
+      ) : null}
 
       <div className="space-y-14">
-        {stages.map((s, i) => (
+        {page.stages.map((s, i) => (
           <div
-            key={s.n}
+            key={`${s.n}-${s.title}-${i}`}
             className={`grid items-center gap-8 lg:grid-cols-2 lg:gap-14 ${
               i % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
             }`}
           >
-            <div className="relative aspect-[5/4] overflow-hidden bg-linen-deep">
-              <Image
-                src={s.image}
-                alt={s.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            </div>
+            {s.image ? (
+              <div className="relative aspect-[5/4] overflow-hidden bg-linen-deep">
+                <Image
+                  src={s.image}
+                  alt={s.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+            ) : (
+              <div className="aspect-[5/4] bg-linen-deep" />
+            )}
             <div>
-              <span className="font-display text-2xl text-ember">{s.n}</span>
+              {s.n ? (
+                <span className="font-display text-2xl text-ember">{s.n}</span>
+              ) : null}
               <h2 className="font-display mt-2 text-3xl text-ash sm:text-4xl">
                 {s.title}
               </h2>
@@ -118,5 +115,19 @@ export default function ProductionPage() {
         ))}
       </div>
     </PageShell>
+  );
+}
+
+export default function ProductionPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[40vh] items-center justify-center text-smoke">
+          Загрузка…
+        </div>
+      }
+    >
+      <ProductionContent />
+    </Suspense>
   );
 }

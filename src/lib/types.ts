@@ -68,9 +68,78 @@ export interface HeroContent {
   ctaSecondary: string;
 }
 
+export interface PageFact {
+  n: string;
+  label: string;
+}
+
+export interface PageStage {
+  n: string;
+  title: string;
+  text: string;
+  image: string;
+}
+
+export interface AboutPageContent {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  image: string;
+  body1: string;
+  body2: string;
+  facts: PageFact[];
+  brandsTitle: string;
+  showBrands: boolean;
+  metaTitle: string;
+  metaDescription: string;
+}
+
+export interface ProductionPageContent {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  heroImage: string;
+  heroCaption: string;
+  video1: string;
+  video1Poster: string;
+  video1Label: string;
+  video2: string;
+  video2Poster: string;
+  video2Label: string;
+  stages: PageStage[];
+  metaTitle: string;
+  metaDescription: string;
+}
+
+export interface ContactsPageContent {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  metaTitle: string;
+  metaDescription: string;
+}
+
+export interface DeliveryPageContent {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  localTitle: string;
+  regionsTitle: string;
+  metaTitle: string;
+  metaDescription: string;
+}
+
+export interface SitePages {
+  about: AboutPageContent;
+  production: ProductionPageContent;
+  contacts: ContactsPageContent;
+  delivery: DeliveryPageContent;
+}
+
 export interface SiteSettings {
   contacts: SiteContacts;
   hero: HeroContent;
+  pages: SitePages;
   featuredProductIds: string[];
   metaTitle: string;
   metaDescription: string;
