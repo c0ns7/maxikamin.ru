@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   serverExternalPackages: ["better-sqlite3"],
+  experimental: {
+    // Default Server Action limit is 1MB — gallery uploads need more.
+    serverActions: {
+      bodySizeLimit: "15mb",
+    },
+    // Proxy buffers admin POSTs; default 10MB truncates larger images.
+    proxyClientMaxBodySize: "15mb",
+  },
   images: {
     remotePatterns: [
       {

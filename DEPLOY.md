@@ -343,7 +343,8 @@ sudo systemctl restart maxikamin
 | 502 Bad Gateway | `systemctl status maxikamin`, `journalctl -u maxikamin -f` |
 | Certbot failed | DNS A-записи, порты 80/443 в UFW и у хостера |
 | Админка не пускает | `.env.local`, `ADMIN_PASSWORD` / пароль из БД |
-| Нет картинок после загрузки | права на `public/uploads`, `client_max_body_size` в Nginx; блок `location /uploads/` (см. выше) — без него Next отдаёт новые файлы только после `systemctl restart maxikamin` |
+| Нет картинок после загрузки | права на `public/uploads`, `client_max_body_size 20M` в Nginx; блок `location /uploads/` (см. выше) |
+| Ошибка при «Загрузить» в галерее | лимит Server Actions (в проекте `bodySizeLimit: 15mb`); Nginx `client_max_body_size`; права записи в `public/uploads` |
 | SQLite readonly | владелец `deploy`, права на `data/` |
 
 ---

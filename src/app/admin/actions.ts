@@ -461,7 +461,9 @@ export async function changePasswordAction(formData: FormData) {
 
 export async function uploadMediaAction(formData: FormData) {
   await requireAdmin();
-  const files = formData.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
+  const files = formData
+    .getAll("files")
+    .filter((f): f is File => f instanceof File && f.size > 0);
   if (!files.length) {
     redirect("/admin/media?error=empty");
   }
@@ -471,12 +473,16 @@ export async function uploadMediaAction(formData: FormData) {
       await saveUploadedMedia(file);
     }
   } catch (error) {
-    const message = error instanceof Error ? error.message : "upload";
+    const raw = error instanceof Error ? error.message : "upload";
+    const message = /body exceeded|unexpected end of form/i.test(raw)
+      ? "Файл слишком большой для загрузки. Максимум 12 МБ."
+      : raw;
     redirect(`/admin/media?error=${encodeURIComponent(message)}`);
   }
 
   revalidatePath("/admin/media");
-  redirect("/admin/media?uploaded=1");
+  revalidatePath("/uploads", "layout");
+  redirect("/admin/media?folder=%2Fuploads%2Fgallery&uploaded=1");
 }
 
 export async function deleteMediaAction(formData: FormData) {
