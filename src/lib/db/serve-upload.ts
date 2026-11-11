@@ -20,22 +20,31 @@ function resolveUploadPath(parts: string[]) {
     return null;
   }
 
-  const abs = path.resolve(UPLOADS_ROOT, ...parts);
+  // Keep path statically scoped under public/uploads for Turbopack tracing.
+  const abs = path.join(UPLOADS_ROOT, ...parts);
   const root = path.resolve(UPLOADS_ROOT);
-  if (abs !== root && !abs.startsWith(root + path.sep)) return null;
-  return abs;
+  const resolved = path.resolve(abs);
+  if (resolved !== root && !resolved.startsWith(root + path.sep)) return null;
+  return resolved;
 }
 
 export async function serveUploadResponse(parts: string[]) {
   const abs = resolveUploadPath(parts);
-  if (!abs || !fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+  if (!abs) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  if (
+    !fs.existsSync(/*turbopackIgnore: true*/ abs) ||
+    !fs.statSync(/*turbopackIgnore: true*/ abs).isFile()
+  ) {
     return new Response("Not found", { status: 404 });
   }
 
   const ext = path.extname(abs).toLowerCase();
   const mime = MIME_BY_EXT[ext] ?? "application/octet-stream";
-  const stat = fs.statSync(abs);
-  const nodeStream = fs.createReadStream(abs);
+  const stat = fs.statSync(/*turbopackIgnore: true*/ abs);
+  const nodeStream = fs.createReadStream(/*turbopackIgnore: true*/ abs);
   const body = Readable.toWeb(nodeStream) as ReadableStream;
 
   const headers: Record<string, string> = {
@@ -47,7 +56,8 @@ export async function serveUploadResponse(parts: string[]) {
   };
 
   if (ext === ".svg") {
-    headers["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'";
+    headers["Content-Security-Policy"] =
+      "default-src 'none'; style-src 'unsafe-inline'";
   }
 
   return new Response(body, { status: 200, headers });
