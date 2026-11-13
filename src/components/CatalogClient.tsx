@@ -32,6 +32,7 @@ export default function CatalogClient({
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get("category") ?? "";
   const brandFromUrl = searchParams.get("brand") ?? "";
+  const queryFromUrl = (searchParams.get("q") ?? "").trim();
 
   const [filters, setFilters] = useState<FilterState>(() => ({
     ...initialFilters,
@@ -51,6 +52,22 @@ export default function CatalogClient({
 
   const filtered = useMemo(() => {
     let list = [...products];
+
+    if (queryFromUrl) {
+      const terms = queryFromUrl.toLowerCase().split(/\s+/).filter(Boolean);
+      list = list.filter((p) => {
+        const hay = [
+          p.name,
+          p.brand,
+          p.category,
+          p.line ?? "",
+          p.description ?? "",
+        ]
+          .join(" ")
+          .toLowerCase();
+        return terms.every((term) => hay.includes(term));
+      });
+    }
 
     if (filters.category) {
       list = list.filter((p) => p.category === filters.category);
@@ -82,9 +99,10 @@ export default function CatalogClient({
     }
 
     return list;
-  }, [filters, sort, products]);
+  }, [filters, sort, products, queryFromUrl]);
 
-  const activeLabel = filters.category || filters.brand || null;
+  const activeLabel =
+    queryFromUrl || filters.category || filters.brand || null;
 
   return (
     <div className="mx-auto flex max-w-[1400px] gap-12 px-5 pb-20 pt-28 sm:px-8 lg:px-10 lg:pt-32">
@@ -107,7 +125,10 @@ export default function CatalogClient({
             <p className="mt-2 text-sm text-smoke">
               {activeLabel ? (
                 <>
-                  Показано: <span className="text-ash">{activeLabel}</span>
+                  {queryFromUrl ? "Поиск" : "Показано"}:{" "}
+                  <span className="text-ash">
+                    {queryFromUrl ? `«${queryFromUrl}»` : activeLabel}
+                  </span>
                   {" · "}
                 </>
               ) : null}
@@ -154,17 +175,27 @@ export default function CatalogClient({
           <div className="border border-dashed border-line px-6 py-16 text-center sm:py-20">
             <p className="font-display text-2xl text-ash">Ничего не нашлось</p>
             <p className="mx-auto mt-3 max-w-sm text-sm text-smoke">
-              Сбросьте фильтры или посмотрите весь каталог — возможно, нужная
-              модель в другой категории.
+              {queryFromUrl
+                ? "Попробуйте другой запрос или сбросьте поиск и фильтры."
+                : "Сбросьте фильтры или посмотрите весь каталог — возможно, нужная модель в другой категории."}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => setFilters(initialFilters)}
-                className="cursor-pointer border border-ash bg-ash px-5 py-2.5 text-[12px] font-medium tracking-wider text-cream uppercase hover:bg-ember hover:border-ember"
-              >
-                Сбросить фильтры
-              </button>
+              {queryFromUrl ? (
+                <Link
+                  href="/catalog"
+                  className="inline-flex cursor-pointer border border-ash bg-ash px-5 py-2.5 text-[12px] font-medium tracking-wider text-cream uppercase hover:bg-ember hover:border-ember"
+                >
+                  Сбросить поиск
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setFilters(initialFilters)}
+                  className="cursor-pointer border border-ash bg-ash px-5 py-2.5 text-[12px] font-medium tracking-wider text-cream uppercase hover:bg-ember hover:border-ember"
+                >
+                  Сбросить фильтры
+                </button>
+              )}
               <Link
                 href="/calculator"
                 className="inline-flex cursor-pointer border border-ash/25 px-5 py-2.5 text-[12px] font-medium tracking-wider text-ash uppercase hover:border-ember hover:text-ember"

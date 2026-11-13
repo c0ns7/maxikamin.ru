@@ -2,14 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
 import CartButton from "@/components/cart/CartButton";
+import HeaderSearch from "@/components/HeaderSearch";
 import NavDropdown from "@/components/NavDropdown";
 import PhoneMenu from "@/components/PhoneMenu";
 import { contactPhones } from "@/lib/contacts";
 import { aboutMenu } from "@/lib/nav";
 import type { SiteContacts } from "@/lib/types";
+
+function SearchFallback({ light }: { light?: boolean }) {
+  return (
+    <span
+      className={`inline-flex h-4 w-4 items-center justify-center ${
+        light ? "opacity-80" : "text-ash/70"
+      }`}
+      aria-hidden
+    >
+      <Search className="h-4 w-4" />
+    </span>
+  );
+}
 
 const nav = [
   { href: "/catalog", label: "Каталог" },
@@ -64,7 +78,11 @@ export default function Header({ contacts }: { contacts: SiteContacts }) {
           Maxi<span className="text-ember-hot">Kamin</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:gap-9 md:flex">
+        <nav className="hidden items-center gap-5 lg:gap-8 md:flex">
+          <Suspense fallback={<SearchFallback light={!solid && onDarkHero} />}>
+            <HeaderSearch light={!solid && onDarkHero} />
+          </Suspense>
+
           {nav.map((item) => {
             const active = pathname.startsWith(item.href);
             return (
@@ -94,7 +112,10 @@ export default function Header({ contacts }: { contacts: SiteContacts }) {
           <CartButton />
         </nav>
 
-        <div className="flex items-center gap-3 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          <Suspense fallback={<SearchFallback light={!solid && onDarkHero} />}>
+            <HeaderSearch light={!solid && onDarkHero} />
+          </Suspense>
           <CartButton />
           <button
             type="button"
@@ -110,6 +131,11 @@ export default function Header({ contacts }: { contacts: SiteContacts }) {
       {open && (
         <div className="border-t border-line bg-linen px-5 py-6 text-ash md:hidden">
           <nav className="flex flex-col gap-1">
+            <div className="mb-3">
+              <Suspense fallback={null}>
+                <HeaderSearch expanded onSearch={closeMobile} />
+              </Suspense>
+            </div>
             <Link href="/" onClick={closeMobile} className="py-2.5 text-lg">
               Главная
             </Link>
