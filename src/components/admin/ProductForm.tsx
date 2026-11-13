@@ -3,7 +3,9 @@ import {
   deleteProductAction,
   saveProductAction,
 } from "@/app/admin/actions";
+import ProductImagesFields from "@/components/admin/ProductImagesFields";
 import type { Product } from "@/lib/types";
+import { getProductImages } from "@/lib/product-images";
 import {
   Checkbox,
   DangerButton,
@@ -77,21 +79,6 @@ export default function ProductForm({
               ))}
             </select>
           </label>
-          <div>
-            <Field
-              label="Изображение (URL)"
-              name="image"
-              required
-              defaultValue={product?.image ?? "/images/hero.png"}
-              hint="Вставьте ссылку из галереи или путь вида /images/..."
-            />
-            <Link
-              href="/admin/media"
-              className="mt-1.5 inline-block text-xs text-[#a84f32] hover:underline"
-            >
-              Открыть галерею →
-            </Link>
-          </div>
           <Field
             label="Линейка"
             name="line"
@@ -103,6 +90,12 @@ export default function ProductForm({
             name="sortOrder"
             type="number"
             defaultValue={product?.sortOrder ?? 0}
+          />
+        </div>
+
+        <div className="rounded-xl border border-[#eee7dc] bg-[#fbfaf8] p-4">
+          <ProductImagesFields
+            initialImages={product ? getProductImages(product) : undefined}
           />
         </div>
 
@@ -143,7 +136,15 @@ export default function ProductForm({
           <input type="hidden" name="id" value={product.id} />
           <DangerButton>Удалить товар</DangerButton>
         </form>
-      ) : null}
+      ) : (
+        <p className="text-xs text-[#8a8176]">
+          Совет: сначала загрузите фото в{" "}
+          <Link href="/admin/media" className="text-[#a84f32] hover:underline">
+            галерею
+          </Link>
+          , затем вставьте ссылки сюда.
+        </p>
+      )}
     </div>
   );
 }

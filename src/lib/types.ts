@@ -7,7 +7,10 @@ export interface Product {
   brand: Brand;
   category: Category;
   price: number;
+  /** Cover / first image — always equals images[0] when present */
   image: string;
+  /** Up to 10 gallery URLs */
+  images?: string[];
   description: string;
   specs?: Record<string, string>;
   line?: string;

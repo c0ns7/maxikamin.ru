@@ -22,6 +22,7 @@ function ensureSchema(sqlite: Database.Database) {
       category TEXT NOT NULL,
       price REAL NOT NULL,
       image TEXT NOT NULL,
+      images TEXT NOT NULL DEFAULT '[]',
       description TEXT NOT NULL DEFAULT '',
       specs TEXT,
       line TEXT,
@@ -89,6 +90,41 @@ function ensureSchema(sqlite: Database.Database) {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+
+  migrateProductsImages(sqlite);
+}
+
+function migrateProductsImages(sqlite: Database.Database) {
+  const cols = sqlite.prepare("PRAGMA table_info(products)").all() as {
+    name: string;
+  }[];
+  if (!cols.some((c) => c.name === "images")) {
+    sqlite.exec(
+      `ALTER TABLE products ADD COLUMN images TEXT NOT NULL DEFAULT '[]'`,
+    );
+  }
+
+  // Backfill empty galleries from cover image once.
+  const rows = sqlite
+    .prepare(
+      `SELECT id, image, images FROM products
+       WHERE image IS NOT NULL AND image != ''`,
+    )
+    .all() as { id: string; image: string; images: string }[];
+
+  const update = sqlite.prepare(`UPDATE products SET images = ? WHERE id = ?`);
+  for (const row of rows) {
+    let list: string[] = [];
+    try {
+      const parsed = JSON.parse(row.images || "[]");
+      if (Array.isArray(parsed)) list = parsed.filter(Boolean);
+    } catch {
+      list = [];
+    }
+    if (list.length === 0) {
+      update.run(JSON.stringify([row.image]), row.id);
+    }
+  }
 }
 
 export function getSqlite() {

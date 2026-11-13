@@ -3,9 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { MouseEvent } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, type MouseEvent } from "react";
 import type { Product } from "@/lib/data";
 import { formatPrice } from "@/lib/data";
+import { getProductImages, isRemoteImage } from "@/lib/product-images";
 import { useToast } from "@/components/Toast";
 import { useCart } from "@/components/cart/CartContext";
 
@@ -24,12 +26,22 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { showToast } = useToast();
   const { addItem } = useCart();
+  const images = getProductImages(product);
+  const [photo, setPhoto] = useState(0);
+  const current = images[photo] ?? product.image;
+  const multi = images.length > 1;
 
   const handleAdd = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
     showToast(`«${product.name}» в корзине`);
+  };
+
+  const shift = (e: MouseEvent, dir: -1 | 1) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPhoto((prev) => (prev + dir + images.length) % images.length);
   };
 
   return (
@@ -44,9 +56,8 @@ export default function ProductCard({
       }}
       className="group"
     >
-      <Link
-        href={`/product/${product.id}`}
-        className={`relative block overflow-hidden bg-linen-deep ${
+      <div
+        className={`relative overflow-hidden bg-linen-deep ${
           featured
             ? "aspect-[4/5] sm:aspect-[5/4]"
             : compact
@@ -54,22 +65,65 @@ export default function ProductCard({
               : "aspect-[4/5]"
         }`}
       >
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
-          sizes={
-            featured
-              ? "(max-width: 1024px) 100vw, 55vw"
-              : "(max-width: 640px) 100vw, 30vw"
-          }
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ash/45 via-transparent to-transparent opacity-70" />
-        <span className="absolute top-4 left-4 bg-paper/90 px-2.5 py-1 text-[10px] font-medium tracking-[0.12em] text-ash uppercase backdrop-blur-sm">
+        <Link href={`/product/${product.id}`} className="absolute inset-0 block">
+          <Image
+            key={current}
+            src={current}
+            alt={product.name}
+            fill
+            unoptimized={isRemoteImage(current)}
+            className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
+            sizes={
+              featured
+                ? "(max-width: 1024px) 100vw, 55vw"
+                : "(max-width: 640px) 100vw, 30vw"
+            }
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ash/45 via-transparent to-transparent opacity-70" />
+        </Link>
+
+        <span className="pointer-events-none absolute top-4 left-4 z-10 bg-paper/90 px-2.5 py-1 text-[10px] font-medium tracking-[0.12em] text-ash uppercase backdrop-blur-sm">
           {product.category}
         </span>
-      </Link>
+
+        {multi ? (
+          <>
+            <button
+              type="button"
+              aria-label="Предыдущее фото"
+              onClick={(e) => shift(e, -1)}
+              className="absolute top-1/2 left-2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center bg-paper/90 text-ash opacity-0 backdrop-blur-sm transition group-hover:opacity-100"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              aria-label="Следующее фото"
+              onClick={(e) => shift(e, 1)}
+              className="absolute top-1/2 right-2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center bg-paper/90 text-ash opacity-0 backdrop-blur-sm transition group-hover:opacity-100"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Фото ${i + 1}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setPhoto(i);
+                  }}
+                  className={`h-1.5 w-1.5 cursor-pointer rounded-full transition ${
+                    i === photo ? "bg-cream" : "bg-cream/40 hover:bg-cream/70"
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        ) : null}
+      </div>
 
       <div className={`flex flex-col ${featured ? "mt-5" : "mt-4"}`}>
         <p className="text-[11px] font-medium tracking-[0.16em] text-ember uppercase">

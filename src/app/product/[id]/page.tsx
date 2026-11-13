@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -12,6 +11,7 @@ import {
 } from "@/lib/db/queries";
 import ProductActions from "@/components/ProductActions";
 import ProductCard from "@/components/ProductCard";
+import ProductGallery from "@/components/ProductGallery";
 
 export const instant = false;
 
@@ -51,16 +51,7 @@ async function ProductContent({ id }: { id: string }) {
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="relative aspect-[4/5] overflow-hidden bg-linen-deep lg:sticky lg:top-28 lg:self-start">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-          />
-        </div>
+        <ProductGallery product={product} />
 
         <div className="flex flex-col lg:pt-2">
           <p className="text-[11px] font-medium tracking-[0.16em] text-ember uppercase">

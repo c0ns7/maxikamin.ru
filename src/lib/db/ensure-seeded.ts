@@ -53,6 +53,7 @@ export function ensureSeeded() {
         category: p.category,
         price: p.price,
         image: p.image,
+        images: p.image ? [p.image] : [],
         description: p.description,
         specs: p.specs ?? null,
         line: p.line ?? null,

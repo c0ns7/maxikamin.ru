@@ -8,6 +8,10 @@ export const products = sqliteTable("products", {
   category: text("category").notNull(),
   price: real("price").notNull(),
   image: text("image").notNull(),
+  images: text("images", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default(sql`'[]'`),
   description: text("description").notNull().default(""),
   specs: text("specs", { mode: "json" }).$type<Record<string, string>>(),
   line: text("line"),

@@ -96,13 +96,18 @@ export async function saveProductAction(formData: FormData) {
     }
   }
 
+  const images = Array.from({ length: 10 }, (_, i) =>
+    String(formData.get(`image_${i}`) ?? "").trim(),
+  ).filter(Boolean);
+
   const payload: Product = {
     id,
     name: String(formData.get("name") ?? "").trim(),
     brand: String(formData.get("brand") ?? "").trim(),
     category: String(formData.get("category") ?? "").trim(),
     price: Number(formData.get("price") ?? 0),
-    image: String(formData.get("image") ?? "").trim(),
+    image: images[0] ?? String(formData.get("image") ?? "").trim(),
+    images,
     description: String(formData.get("description") ?? "").trim(),
     specs,
     line: String(formData.get("line") ?? "").trim() || undefined,

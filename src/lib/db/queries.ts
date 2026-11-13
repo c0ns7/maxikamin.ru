@@ -18,18 +18,24 @@ import type {
   Review,
   SiteSettings,
 } from "@/lib/types";
+import { normalizeProductImages } from "@/lib/product-images";
 import { defaultSettings } from "./defaults";
 
 export { defaultSettings };
 
 function mapProduct(row: ProductRow): Product {
+  const images = normalizeProductImages(
+    Array.isArray(row.images) ? row.images : undefined,
+    row.image,
+  );
   return {
     id: row.id,
     name: row.name,
     brand: row.brand,
     category: row.category,
     price: row.price,
-    image: row.image,
+    image: images[0] ?? row.image,
+    images,
     description: row.description,
     specs: row.specs ?? undefined,
     line: row.line ?? undefined,
@@ -120,6 +126,9 @@ export function createProduct(
   },
 ) {
   const db = getDb();
+  const images = normalizeProductImages(input.images, input.image);
+  const image = images[0] ?? input.image;
+
   db.insert(products)
     .values({
       id: input.id,
@@ -127,7 +136,8 @@ export function createProduct(
       brand: input.brand,
       category: input.category,
       price: input.price,
-      image: input.image,
+      image,
+      images,
       description: input.description,
       specs: input.specs ?? null,
       line: input.line ?? null,
@@ -145,13 +155,20 @@ export function updateProduct(id: string, patch: Partial<Product>) {
   const current = getProduct(id);
   if (!current) return undefined;
 
+  const images = normalizeProductImages(
+    patch.images ?? current.images,
+    patch.image ?? current.image,
+  );
+  const image = images[0] ?? patch.image ?? current.image;
+
   db.update(products)
     .set({
       name: patch.name ?? current.name,
       brand: patch.brand ?? current.brand,
       category: patch.category ?? current.category,
       price: patch.price ?? current.price,
-      image: patch.image ?? current.image,
+      image,
+      images,
       description: patch.description ?? current.description,
       specs: patch.specs === undefined ? current.specs ?? null : patch.specs,
       line: patch.line === undefined ? current.line ?? null : patch.line,
